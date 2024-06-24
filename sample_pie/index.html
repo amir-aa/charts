@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pie Chart</title>
+ 
+
+</head>
+<body>
+    <canvas id="myPieChart"></canvas>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+async function fetchfromphp(){
+    var response=await fetch('http://127.0.0.1:3000/app.php');
+    var data= await response.json()
+    return data.value
+}
+
+async function createChart(){
+    var fetched= await fetchfromphp();
+
+const mychart=document.getElementById("myPieChart").getContext("2d");
+return new Chart(mychart,{type:'pie',data:{labels:["Fetched value","Remain"],datasets:[{data:[fetched,100-fetched],backgroundColor:["#111111","#000000"],hoverBackgroundColor:["#FFFFFF","#FFFFFF"]}]},options:{responsive: true}})
+}
+async function updateChart(chart){
+var value= await fetchfromphp();
+chart.data.datasets[0].data=[value,100-value];
+chart.update();
+}
+
+(async()=> {const chart=await createChart();setInterval(()=>updateChart(chart),3000)})();
+
+</script>
+ 
+
+</html>
